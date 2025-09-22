@@ -19,6 +19,7 @@ public class WebSecurityConfig {
 		http
 			.authorizeHttpRequests((requests) -> requests
 				.requestMatchers("/", "/home").permitAll()
+					.requestMatchers("/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated()
 			)
 			.formLogin((form) -> form
@@ -28,17 +29,5 @@ public class WebSecurityConfig {
 			.logout((logout) -> logout.permitAll());
 
 		return http.build();
-	}
-
-	@Bean
-	public UserDetailsService userDetailsService() {
-		UserDetails user =
-			 User.withDefaultPasswordEncoder()
-				.username("user")
-				.password("password")
-				.roles("USER")
-				.build();
-
-		return new InMemoryUserDetailsManager(user);
 	}
 }

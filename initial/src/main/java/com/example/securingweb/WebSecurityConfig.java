@@ -19,6 +19,8 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/home").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -26,19 +28,7 @@ public class WebSecurityConfig {
                         .permitAll()
                 )
                 .logout((logout) -> logout.permitAll());
-
+        http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
         return http.build();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withDefaultPasswordEncoder()
-                        .username("user")
-                        .password("password")
-                        .roles("USER")
-                        .build();
-
-        return new InMemoryUserDetailsManager(user);
     }
 }
